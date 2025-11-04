@@ -77,8 +77,8 @@ Sensor::MotorEncoder::MotorEncoder(uint pinA, uint pinB)
     this->pinAVal = EncodPinA.GetState();
     this->pinBVal = EncodPinB.GetState();
 
-    this->encoderCounts = 0;
-    this->previousCounts = 0;
+    this->encoderCounts = 0.0f;
+    this->previousCounts = 0.0f;
 
     this->wheelAngVelocity = 0;
     this->wheelLinVelocity = 0;
@@ -86,11 +86,11 @@ Sensor::MotorEncoder::MotorEncoder(uint pinA, uint pinB)
     this->EncodPinA.SetIRQ(GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, *PinAHandler_Callback);
     this->EncodPinB.SetIRQ(GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, *PinBHandler_Callback);
     
-    this->timer.user_data = &pinA;
+    this->timer.user_data = this;
 
     //Make the timer negative, so the time is ALWAYS accurate regardless of callback execution time
     add_repeating_timer_ms(-1 * (1000 / timerFrequency), MeasureVelocity_Callback, NULL, &timer);
-
+    
 }
 
 void Sensor::MotorEncoder::PinAHandler(uint32_t events) {
@@ -102,7 +102,13 @@ void Sensor::MotorEncoder::PinAHandler(uint32_t events) {
     a = 0, b = 1 add
     a = 1, b = 1 subtract    
     */
-    encoderCounts += 1 * (pinAVal != pinBVal) - 1 * (pinAVal == pinBVal);
+
+    if (pinAVal != pinBVal) {
+        encoderCounts += 1;
+    } else {
+        encoderCounts -= 1;
+    }
+
 }
 void Sensor::MotorEncoder::PinBHandler(uint32_t events){
     this->pinBVal = EncodPinB.GetState();
@@ -113,7 +119,13 @@ void Sensor::MotorEncoder::PinBHandler(uint32_t events){
     a = 0, b = 1 subtract
     a = 1, b = 1 add
     */
-    encoderCounts -= 1 * (pinAVal != pinBVal) - 1 * (pinAVal == pinBVal);
+
+    if (pinAVal != pinBVal) {
+        encoderCounts -= 1;
+    } else {
+        encoderCounts += 1;
+    }
+
 }
 
 void Sensor::MotorEncoder::PinAHandler_Callback(uint pin, uint32_t events){
@@ -124,7 +136,10 @@ void Sensor::MotorEncoder::PinBHandler_Callback(uint pin, uint32_t events){
 }
 
 void Sensor::MotorEncoder::MeasureVelocity(){
+    
+    
     int deltaCounts = this->encoderCounts - this->previousCounts;
+    
     this->previousCounts = this->encoderCounts; //Update previous counts
 
     float countsPerSecond = deltaCounts * timerFrequency;
@@ -133,12 +148,14 @@ void Sensor::MotorEncoder::MeasureVelocity(){
 
     this->wheelAngVelocity = motorAngVelocity * gearRatio;
     this->wheelLinVelocity = this->wheelAngVelocity * wheelRadius;
+    
 
 }
 
 bool Sensor::MotorEncoder::MeasureVelocity_Callback(__unused struct repeating_timer *t){
     //Take the void pointer, cast it to an uint pointer, then dereference it, getting us a uint number
-    instanceMap[*(uint*)t->user_data]->MeasureVelocity();
+    MotorEncoder self = *(MotorEncoder*)t->user_data;
+    self.MeasureVelocity();
     return true;
 
 }

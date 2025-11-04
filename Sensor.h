@@ -36,6 +36,8 @@ namespace Sensor {
     #pragma region MotorEncoder
     class MotorEncoder {
         public:
+
+            
             MotorEncoder(uint pinA, uint pinB);
             #pragma region Public Methods
             float LinearVelocity() {return wheelLinVelocity;}
