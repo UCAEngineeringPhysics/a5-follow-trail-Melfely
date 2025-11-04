@@ -132,7 +132,7 @@ void Sensor::MotorEncoder::PinAHandler_Callback(uint pin, uint32_t events){
     instanceMap[pin]->PinAHandler(events);
 }
 void Sensor::MotorEncoder::PinBHandler_Callback(uint pin, uint32_t events){
-    instanceMap[pin]->PinBHandler(events);
+    //instanceMap[pin]->PinBHandler(events);
 }
 
 void Sensor::MotorEncoder::MeasureVelocity(){
@@ -146,7 +146,7 @@ void Sensor::MotorEncoder::MeasureVelocity(){
     float motorRPS = countsPerSecond / encoderCPR;
     float motorAngVelocity = motorRPS * 2 * M_PI;
 
-    this->wheelAngVelocity = motorAngVelocity * gearRatio;
+    this->wheelAngVelocity = motorAngVelocity / gearRatio;
     this->wheelLinVelocity = this->wheelAngVelocity * wheelRadius;
     
 

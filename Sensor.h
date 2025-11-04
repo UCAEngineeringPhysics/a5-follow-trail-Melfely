@@ -40,6 +40,7 @@ namespace Sensor {
             
             MotorEncoder(uint pinA, uint pinB);
             #pragma region Public Methods
+
             float LinearVelocity() {return wheelLinVelocity;}
             float AngularVelocity(){ return wheelAngVelocity;}
             void ResetEncoderCount() {this->encoderCounts = 0;}
@@ -59,16 +60,16 @@ namespace Sensor {
                 GPIO::PIN EncodPinA;
                 GPIO::PIN EncodPinB;
 
-                bool pinAVal;
-                bool pinBVal;
+                volatile bool pinAVal;
+                volatile bool pinBVal;
 
-                int encoderCounts;
-                int previousCounts;
+                volatile int encoderCounts;
+                volatile int previousCounts;
 
                 /// @brief Angular Velocity of the wheel
-                float wheelAngVelocity;
+                volatile float wheelAngVelocity;
                 /// @brief Linear Velocity
-                float wheelLinVelocity;
+                volatile float wheelLinVelocity;
 
                 struct repeating_timer timer;
             #pragma endregion
