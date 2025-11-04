@@ -8,6 +8,7 @@
 GPIO::PIN::PIN(uint pin, bool output = true)
 : pinID(pin)
 {
+    gpio_set_irq_callback(&MasterCallback);
     //Init the pin for Led Control
     gpio_init(pinID);
     gpio_set_dir(pinID, output);
@@ -17,7 +18,7 @@ GPIO::PIN::PIN(uint pin, bool output = true)
 /// @param pin the pin for the PWM GPIO Init
 GPIO::PIN::PIN(uint pin) : pinID(pin)
 {
-
+    gpio_set_irq_callback(&MasterCallback);
 }
 
 /// @brief Toggles the state of the pin, in output mode.
@@ -60,9 +61,30 @@ void GPIO::PIN::SetPulls(bool PullUp, bool PullDown){
     gpio_set_pulls(pinID, PullUp, PullDown);
 }
 
-void GPIO::PIN::SetIRQ(uint32_t eventMask, gpio_irq_callback_t callback) {
-    gpio_set_irq_enabled_with_callback(pinID, eventMask , true, callback);
+/// @brief Define the static callback array
+std::function<void(uint32_t)> GPIO::PIN::pinCallBack[NUM_BANK0_GPIOS];
+
+void GPIO::PIN::SetIRQ(uint32_t eventMask, std::function<void(uint32_t)> callback) {
+    pinCallBack[pinID] = callback;
+
+    gpio_set_irq_enabled(pinID, eventMask, true);
 }
+
+void GPIO::PIN::DisableIRQ() {
+    pinCallBack[pinID] = nullptr;
+    gpio_set_irq_enabled(pinID, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE | GPIO_IRQ_LEVEL_HIGH | GPIO_IRQ_LEVEL_LOW, false);
+
+}
+
+void GPIO::PIN::MasterCallback(uint pin, uint32_t eventMask) {
+    
+    if (pinCallBack[pin]) {
+        pinCallBack[pin](eventMask);
+    }
+
+}
+
+
 
 #pragma endregion
 

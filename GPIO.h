@@ -9,6 +9,8 @@
 #include "hardware/clocks.h"
 #include <cassert>
 #include <atomic>
+#include <functional>
+
 namespace GPIO
 {
     class PIN {
@@ -27,7 +29,9 @@ namespace GPIO
 
             virtual void SetPulls(bool PullUp, bool PullDown);
 
-            virtual void SetIRQ(uint32_t eventMask, gpio_irq_callback_t callback);
+            void SetIRQ(uint32_t eventMask, std::function<void(uint32_t)> callback);
+
+            void DisableIRQ();
 
         protected:
             PIN(uint pin);
@@ -35,6 +39,13 @@ namespace GPIO
             const uint pinID;
             uint64_t timeAtLastCall_us= 0;
             float timePassed = 0;
+
+            
+
+        private:
+            static std::function<void(uint32_t)> pinCallBack[NUM_BANK0_GPIOS];
+
+            static void MasterCallback(uint, uint32_t);
 
     };
 

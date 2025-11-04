@@ -23,13 +23,10 @@ namespace Sensor {
             Distance() = delete;
 
             void echoHandler(uint32_t events);
-            static void echoHandler_callback(uint pin, uint32_t events);
 
             std::optional<float> distance; //Distance to wall in meters
             uint64_t startTime;
 
-            static std::unordered_map<uint, Distance*> instanceMap; 
-            //Thanks AI! The suggestion of using a map was great
 
 
     };
@@ -45,6 +42,9 @@ namespace Sensor {
             float AngularVelocity(){ return wheelAngVelocity;}
             void ResetEncoderCount() {this->encoderCounts = 0;}
 
+            volatile int encoderCounts;
+            volatile int previousCounts;
+
             #pragma endregion
         protected:
             MotorEncoder() = delete;
@@ -54,7 +54,6 @@ namespace Sensor {
                 static constexpr float encoderCPR = 28; //Pulse Counts per revolution
                 static constexpr float timerFrequency = 100;
 
-                static std::unordered_map<uint, MotorEncoder*> instanceMap;
             #pragma endregion
             #pragma region Fields
                 GPIO::PIN EncodPinA;
@@ -63,9 +62,7 @@ namespace Sensor {
                 volatile bool pinAVal;
                 volatile bool pinBVal;
 
-                volatile int encoderCounts;
-                volatile int previousCounts;
-
+                
                 /// @brief Angular Velocity of the wheel
                 volatile float wheelAngVelocity;
                 /// @brief Linear Velocity
@@ -77,9 +74,6 @@ namespace Sensor {
 
             void PinAHandler(uint32_t events);
             void PinBHandler(uint32_t events);
-
-            static void PinAHandler_Callback(uint pin, uint32_t events);
-            static void PinBHandler_Callback(uint pin, uint32_t events);
 
             void MeasureVelocity();
 
