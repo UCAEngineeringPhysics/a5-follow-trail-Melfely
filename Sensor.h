@@ -62,7 +62,7 @@ namespace Sensor {
                 volatile bool pinAVal;
                 volatile bool pinBVal;
 
-                
+
                 /// @brief Angular Velocity of the wheel
                 volatile float wheelAngVelocity;
                 /// @brief Linear Velocity
@@ -77,7 +77,7 @@ namespace Sensor {
 
             void MeasureVelocity();
 
-            static bool MeasureVelocity_Callback(__unused struct repeating_timer *t);
+            static bool MeasureVelocity_Callback(struct repeating_timer *t);
 
             #pragma endregion
             
