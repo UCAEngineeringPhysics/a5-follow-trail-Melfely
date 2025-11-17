@@ -17,12 +17,12 @@ int main()
     Sensor::MotorEncoder RightMotorEncoder(16, 17);
     
 
-    Drivetrain::DualMotor Drive(12, 7, 9, 8, 15, 13, 14);
+    //Drivetrain::DualMotor Drive(12, 7, 9, 8, 15, 13, 14);
     PWM::MOTOR RightMotor(7, 9, 8);
     stdio_init_all();
 
-    Drive.SetState(true);
-    RightMotor.Forward(100);
+    //Drive.SetState(true);
+    RightMotor.Forward(1);
     
     while (true) {
         printf("Right Wheel Speed: %f \n", RightMotorEncoder.AngularVelocity());

@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(A5 A5.cpp GPIO GPIO.cpp PWM PWM.cpp DriveTrain DriveTrain.cpp Sensor Sensor.cpp )
+add_executable(A5 A5.cpp GPIO.cpp PWM.cpp DriveTrain.cpp Sensor.cpp EncodedMotor.cpp)
 
 pico_set_program_name(A5 "A5")
 pico_set_program_version(A5 "0.1")
