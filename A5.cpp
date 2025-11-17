@@ -10,9 +10,9 @@ int main()
 {
     stdio_init_all();
 
-    //PWM::LED Red(28);
-    //PWM::LED Green(27);
-    //PWM::LED Blue(26);
+    PWM::LED Red(28);
+    PWM::LED Green(27);
+    PWM::LED Blue(26);
 
     Sensor::MotorEncoder RightMotorEncoder(17, 16);
     
