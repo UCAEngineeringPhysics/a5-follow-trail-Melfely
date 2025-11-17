@@ -14,7 +14,7 @@ int main()
     PWM::LED Green(27);
     PWM::LED Blue(26);
 
-    Sensor::MotorEncoder RightMotorEncoder(17, 16);
+    Sensor::MotorEncoder RightMotorEncoder(16, 17);
     
 
     Drivetrain::DualMotor Drive(12, 7, 9, 8, 15, 13, 14);
@@ -22,11 +22,12 @@ int main()
     stdio_init_all();
 
     Drive.SetState(true);
-    RightMotor.Forward(1);
+    RightMotor.Forward(100);
     
     while (true) {
-        printf("Right Wheel Speed: %.2f \n", RightMotorEncoder.LinearVelocity());
+        printf("Right Wheel Speed: %f \n", RightMotorEncoder.AngularVelocity());
         //RightMotorEncoder.ResetEncoderCount();
         //printf("Test: %d - %d \n", RightMotorEncoder.encoderCounts, RightMotorEncoder.previousCounts);
+        //sleep_ms(10);
     }
 }
