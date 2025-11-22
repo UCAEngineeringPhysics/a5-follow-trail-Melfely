@@ -21,9 +21,9 @@ You can use following definitions in your equation:
 
 > Write down linear motion equation below. 👇
 
-$ d = \frac{(2 \pi r)C}{i CPR} $
+$d = \frac{(2 \pi r)C}{i CPR}$
 
-$ C = \frac{i CPR d}{(2 \pi r)} $
+$C = \frac{i CPR d}{(2 \pi r)}$
 
 > [!TIP]
 > If other quantities than the listed ones are needed.
@@ -45,16 +45,16 @@ You can use following definitions in your equation:
 > Write down angular motion equation(s) below. 👇
 
 Presuming clockwise rotation is the positive direction.
-$C_l = - C_r $ and
-$C_l = \frac{C}{2} $
+$C_l = - C_r$ and
+$C_l = \frac{C}{2}$
 
 
 
-$ \theta = \frac{(4 \pi r)C}{i CPR L} $
+$\theta = \frac{(4 \pi r)C}{i CPR L}$
 
-$ C = \frac{iCPRL}{4 \pi r} $
+$C = \frac{iCPRL}{4 \pi r}$
 
-$ C_l = \frac{iCPRL}{2 \pi r} = - C_r$
+$C_l = \frac{iCPRL}{2 \pi r} = - C_r$
 
 > [!TIP]
 > You may find the calculation of arc length as illustrated below helpful.
