@@ -13,7 +13,6 @@ namespace PWM
             EncodedMotor(Drivetrain::MotorInit motorInit);
 
             void RotateCounts(int counts, float speed);
-            void RotateCounts(int counts);
 
             void SetCounts(int counts);
 

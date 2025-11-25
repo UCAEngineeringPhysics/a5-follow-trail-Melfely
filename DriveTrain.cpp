@@ -1,4 +1,5 @@
 #include "DriveTrain.h"
+#include <cmath>
 
 #pragma region DualMotor
 
@@ -95,6 +96,35 @@ DualMotor(STBYPin)
 {
     LeftMotor = new PWM::EncodedMotor(LeftMotorInit);
     RightMotor = new PWM::EncodedMotor(RightMotorInit);
+}
+
+void Drivetrain::EncodedDualMotor::RotateAmount(float radians, float speed) {
+    this->radians = radians;
+
+    int leftCounts = (gearRatio * encoderCPR * radians * WHEELLENGTH) / (2 * M_PI * wheelRadius);
+    int rightCounts = -1 * leftCounts;
+
+    static_cast<PWM::EncodedMotor*>(LeftMotor)->RotateCounts(leftCounts, speed);
+    static_cast<PWM::EncodedMotor*>(RightMotor)->RotateCounts(rightCounts, speed);
+ 
+}
+
+void Drivetrain::EncodedDualMotor::RotateAmount(float radians) {
+    this->RotateAmount(meters, this->speed);
+}
+
+void Drivetrain::EncodedDualMotor::DriveAmount(float meters, float speed) {
+    this->meters = meters; 
+
+    
+    int counts = (gearRatio * encoderCPR * meters) / (2 * M_PI * wheelRadius);
+    
+    static_cast<PWM::EncodedMotor*>(LeftMotor)->RotateCounts(counts, speed);
+    static_cast<PWM::EncodedMotor*>(RightMotor)->RotateCounts(counts, speed);
+}
+
+void Drivetrain::EncodedDualMotor::DriveAmount(float meters) {
+    this->DriveAmount(meters, this->speed);
 }
 
 #pragma endregion

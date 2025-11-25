@@ -52,9 +52,9 @@ $C_l = \frac{C}{2}$
 
 $\theta = \frac{(4 \pi r)C}{i CPR L}$
 
-$C = \frac{iCPRL}{4 \pi r}$
+$C = \frac{iCPRL \theta}{4 \pi r}$
 
-$C_l = \frac{iCPRL}{2 \pi r} = - C_r$
+$C_l = \frac{iCPRL \theta}{2 \pi r} = - C_r$
 
 > [!TIP]
 > You may find the calculation of arc length as illustrated below helpful.

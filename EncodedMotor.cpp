@@ -11,9 +11,9 @@ MotorEncoder(motorInit.encPin1,motorInit.encPin2)
 }
 
 void PWM::EncodedMotor::RotateCounts(int counts, float speed) {
+    this->SetCounts(counts);
 
-}
-void PWM::EncodedMotor::RotateCounts(int counts) {
+    
 
 }
 
