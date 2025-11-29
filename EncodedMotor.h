@@ -26,7 +26,7 @@ namespace PWM
 
             void Backward();
 
-            void SetSpeed(float speed){this->speed = speed;};
+            void SetSpeed(float speed){this->speed = speed; this->SetDuty(speed); };
             
             void SetSpeedMode(bool mode) {IsExactSpeed = mode;};
             
@@ -37,7 +37,7 @@ namespace PWM
             int endCounts;
             struct repeating_timer timer;
             float speed;
-            bool IsExactSpeed = true;
+            bool IsExactSpeed = false;
 
             virtual void HandleMotorTimer_Callback(struct repeating_timer *t);
 
