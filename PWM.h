@@ -7,7 +7,7 @@
 namespace PWM
 {
 
-    class PIN : GPIO::PIN{
+    class PIN : public GPIO::PIN{
 
         public: 
             PIN(uint pin, int frequency, int wrapCounter);
@@ -20,14 +20,17 @@ namespace PWM
 
             virtual void Stop();
 
-            virtual void Toggle();
-            virtual void SetState(bool IsOn);
-            virtual bool GetState();
+            virtual void Toggle() override;
+            virtual void SetState(bool IsOn) override;
+            virtual bool GetState() override;
             virtual float GetDuty();
             
             using GPIO::PIN::GetPin;
             using GPIO::PIN::ToggleEvery;
             using GPIO::PIN::SetIRQ;
+            using GPIO::PIN::DisableIRQ;
+
+            virtual ~PIN() {Stop();};
 
         protected:
             PIN() = delete; //Remove Default Constructor
@@ -68,7 +71,9 @@ namespace PWM
 
             void Forward(float speed);
             void Backward(float speed);
-        private:
+
+            virtual ~MOTOR() {};
+        protected:
             
             using PIN::SetDuty;
 
@@ -78,4 +83,5 @@ namespace PWM
 
     };
 } // namespace PWM
+
 #endif

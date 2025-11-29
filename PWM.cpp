@@ -30,7 +30,6 @@ void PWM::MOTOR::Forward(float speed) {
     Pin1.SetState(false);
     Pin2.SetState(true);
     this->SetDuty(speed);
-    this->currentDuty = speed;
 }
 
 /// @brief Will Spin the motor forward at a given speed percentage of max
@@ -40,7 +39,6 @@ void PWM::MOTOR::Backward(float speed) {
     Pin1.SetState(true);
     Pin2.SetState(false);
     this->SetDuty(speed);
-    this->currentDuty = speed;
 }
 
 #pragma endregion

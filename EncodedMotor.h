@@ -20,9 +20,27 @@ namespace PWM
 
             int GetEndCounts();
 
+            virtual ~EncodedMotor() {};
+
+            void Forward();
+
+            void Backward();
+
+            void SetSpeed(float speed){this->speed = speed;};
+            
+            void SetSpeedMode(bool mode) {IsExactSpeed = mode;};
+            
+            virtual void Stop() override;
+          
         protected:
             int countsToRotate;
             int endCounts;
+            struct repeating_timer timer;
+            float speed;
+            bool IsExactSpeed = true;
+
+            virtual void HandleMotorTimer_Callback(struct repeating_timer *t);
+
 
     };
 

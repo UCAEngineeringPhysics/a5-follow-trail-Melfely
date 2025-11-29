@@ -33,6 +33,8 @@ namespace GPIO
 
             void DisableIRQ();
 
+            virtual ~PIN() {DisableIRQ();};
+
         protected:
             PIN(uint pin);
             PIN() = delete; //Remove default constructor
@@ -82,4 +84,5 @@ namespace GPIO
 
     };
 } //Namespace GPIO
+
 #endif
