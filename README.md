@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/1_wnOXgh)
 # Trail Follower
 
 Implement a more precised distance control to follow the trapezoidal trail in the lab.
@@ -20,6 +21,10 @@ You can use following definitions in your equation:
 
 > Write down linear motion equation below. 👇
 
+$d = \frac{(2 \pi r)C}{i CPR}$
+
+$C = \frac{i CPR d}{(2 \pi r)}$
+
 > [!TIP]
 > If other quantities than the listed ones are needed.
 > Please introduce them in math language.
@@ -38,6 +43,18 @@ You can use following definitions in your equation:
 - Encoder's counts per revolution: $CPR$
 
 > Write down angular motion equation(s) below. 👇
+
+Presuming clockwise rotation is the positive direction.
+$C_l = - C_r$ and
+$C_l = \frac{C}{2}$
+
+
+
+$\theta = \frac{(4 \pi r)C}{i CPR L}$
+
+$C = \frac{iCPRL \theta}{4 \pi r}$
+
+$C_l = \frac{iCPRL \theta}{2 \pi r} = - C_r$
 
 > [!TIP]
 > You may find the calculation of arc length as illustrated below helpful.
