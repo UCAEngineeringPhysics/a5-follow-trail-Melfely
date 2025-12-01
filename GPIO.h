@@ -42,6 +42,12 @@ namespace GPIO
             uint64_t timeAtLastCall_us= 0;
             float timePassed = 0;
 
+            // Delete Copy Constructor (Prevent PIN b = a)
+            PIN(const PIN&) = delete;
+
+            // Delete Assignment Operator (Prevent b = a)
+            PIN& operator=(const PIN&) = delete;
+
             
 
         private:

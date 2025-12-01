@@ -123,12 +123,12 @@ void Sensor::MotorEncoder::MeasureVelocity(){
     
     this->previousCounts = this->encoderCounts; //Update previous counts
 
-    float countsPerSecond = deltaCounts * timerFrequency;
-    float motorRPS = countsPerSecond / encoderCPR;
-    float motorAngVelocity = motorRPS * 2 * M_PI;
+    float countsPerSecond = deltaCounts * timerFrequency; //The counts per second of the wheel
+    float motorRPS = countsPerSecond / encoderCPR; //Motor Revolutions per second
+    float motorAngVelocity = motorRPS * 2 * M_PI; //Motor Radians per second
 
-    this->wheelAngVelocity = motorAngVelocity / gearRatio;
-    this->wheelLinVelocity = this->wheelAngVelocity * wheelRadius;
+    this->wheelAngVelocity = motorAngVelocity / gearRatio; //Radians per second
+    this->wheelLinVelocity = this->wheelAngVelocity * wheelRadius; //Meters per second
     
 
 }

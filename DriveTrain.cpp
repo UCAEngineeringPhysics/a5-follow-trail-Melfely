@@ -96,21 +96,25 @@ DualMotor(STBYPin)
 {
     LeftMotor = new PWM::EncodedMotor(LeftMotorInit);
     RightMotor = new PWM::EncodedMotor(RightMotorInit);
+
+    _LeftMotor()->SetSpeedMode(true); //Set the motors to PID Controlled
+    _RightMotor()->SetSpeedMode(true); //Set the motors to PID Controlled
 }
 
-void Drivetrain::EncodedDualMotor::RotateAmount(float radians, float speed) {
-    this->radians = radians;
+void Drivetrain::EncodedDualMotor::RotateAmount(float degrees, float speed) {
+    float targetRadians = degrees * (M_PI / 180.0f);
+    this->radians = targetRadians;
 
-    int leftCounts = (gearRatio * encoderCPR * radians * WHEELLENGTH) / (2 * M_PI * wheelRadius);
-    int rightCounts = -1 * leftCounts;
+    float leftCounts = (gearRatio * encoderCPR * targetRadians * WHEELBASE) / (2.0f * M_PI * wheelRadius);
+    float rightCounts = -1 * leftCounts;
 
-    static_cast<PWM::EncodedMotor*>(LeftMotor)->RotateCounts(leftCounts, speed);
-    static_cast<PWM::EncodedMotor*>(RightMotor)->RotateCounts(rightCounts, speed);
+    _LeftMotor()->RotateCounts(leftCounts, speed);
+    _RightMotor()->RotateCounts(rightCounts, speed);
  
 }
 
-void Drivetrain::EncodedDualMotor::RotateAmount(float radians) {
-    this->RotateAmount(meters, this->speed);
+void Drivetrain::EncodedDualMotor::RotateAmount(float degrees) {
+    this->RotateAmount(degrees, this->speed);
 }
 
 void Drivetrain::EncodedDualMotor::DriveAmount(float meters, float speed) {
@@ -119,8 +123,8 @@ void Drivetrain::EncodedDualMotor::DriveAmount(float meters, float speed) {
     
     int counts = (gearRatio * encoderCPR * meters) / (2 * M_PI * wheelRadius);
     
-    static_cast<PWM::EncodedMotor*>(LeftMotor)->RotateCounts(counts, speed);
-    static_cast<PWM::EncodedMotor*>(RightMotor)->RotateCounts(counts, speed);
+    _LeftMotor()->RotateCounts(counts, speed);
+   _RightMotor()->RotateCounts(counts, speed);
 }
 
 void Drivetrain::EncodedDualMotor::DriveAmount(float meters) {

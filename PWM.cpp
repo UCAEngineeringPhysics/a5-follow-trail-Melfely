@@ -32,7 +32,7 @@ void PWM::MOTOR::Forward(float speed) {
     this->SetDuty(speed);
 }
 
-/// @brief Will Spin the motor forward at a given speed percentage of max
+/// @brief Will Spin the motor backward at a given speed percentage of max
 /// @param speed the rate to spin the motor at, as a range of 0 to 1
 void PWM::MOTOR::Backward(float speed) {
     assert(speed <= 1 && speed >= 0); //Make sure speed is set between 0 and 1

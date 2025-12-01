@@ -13,21 +13,37 @@ int main()
     PWM::LED Red(28);
     PWM::LED Green(27);
     PWM::LED Blue(26);
-
-    Sensor::MotorEncoder RightMotorEncoder(16, 17);
+    Drivetrain::MotorInit RightMotorInit(7,9,8,16,17);
+    Drivetrain::MotorInit LeftMotorInit(15,13,14,18,19);
     
 
-    //Drivetrain::DualMotor Drive(12, 7, 9, 8, 15, 13, 14);
-    PWM::MOTOR RightMotor(7, 9, 8);
-    stdio_init_all();
+    Drivetrain::EncodedDualMotor Drive(12, LeftMotorInit, RightMotorInit);
 
-    //Drive.SetState(true);
-    RightMotor.Forward(1);
+    Drive.SetState(true);
+   
+    Drive.SetSpeed(0.2);
+    //Drive.DriveAmount(0.2);
+    Drive.RotateAmount(180.0f);
+
+    while(true);
     
-    while (true) {
-        printf("Right Wheel Speed: %f \n", RightMotorEncoder.AngularVelocity());
-        //RightMotorEncoder.ResetEncoderCount();
-        //printf("Test: %d - %d \n", RightMotorEncoder.encoderCounts, RightMotorEncoder.previousCounts);
-        //sleep_ms(10);
-    }
+    // int runTime = 6000;
+    // int sleepTime = 10;
+
+    // sleep_ms(2000);
+
+   
+    // while(runTime > 0){
+    //     if (runTime > 1000 && runTime < 5000) {
+    //          Drive.Forward(0.2);
+    //     } else if (runTime < 1000) {
+    //         Drive.Stop();
+    //     }
+
+    //     runTime = runTime - sleepTime;
+    //     printf("0.200 %.4f\n", Drive._LeftMotor()->LinearVelocity() );
+    //     sleep_ms(sleepTime);
+        
+    // }
+    // Drive.SetState(false);
 }

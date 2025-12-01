@@ -1,40 +1,162 @@
 #include "EncodedMotor.h"
+#include "DriveTrain.h" //Include this here instead of .h so no circular dependency issue
+#include <algorithm>
+#include <cmath>
 
 #pragma region EncodedMotor
 
-PWM::EncodedMotor::EncodedMotor(Drivetrain::MotorInit motorInit)
+PWM::EncodedMotor::EncodedMotor(Drivetrain::MotorInit& motorInit)
 : 
 MOTOR(motorInit.MotorPWM, motorInit.Pin1, motorInit.Pin2),
 MotorEncoder(motorInit.encPin1,motorInit.encPin2)
 {
-
+    //Create a timer that will trigger every millisecond regardless.
+    add_repeating_timer_ms(-1 * (1000 / timerFrequency), HandleMotor_Callback, this, &timer);
 }
 
 void PWM::EncodedMotor::RotateCounts(int counts, float speed) {
     this->SetCounts(counts);
-    this->SetSpeed(speed);
+    if (IsPIDControlled) {
+        int direction = (counts >= 0) ? 1 : -1;
+        float outSpeed = std::abs(speed) * direction;
+        this->SetSpeed(outSpeed);
+        
+    } else {
+        this->SetSpeed(speed);
+        if(counts > 0) {
+            this->Forward();
+        } else if (counts < 0 ){
+            this->Backward();
+        }
+    }
+    
 }
 
+/// @brief Will Spin the motor forward at a given speed either as a percetnage of max or as a raw meters / second value.
+/// @param speed the rate to spin the motor at, as a range of 0 to 1 If in PID control mode at the given m/s if in PID control
+void PWM::EncodedMotor::Forward(float speed) {
+    if (IsPIDControlled) {
+        this->SetSpeed(std::abs(speed));
+    } else {
+        PWM::MOTOR::Forward(speed);
+    }
+}
+
+/// @brief Will Spin the motor backward at a given speed either as a percetnage of max or as a raw meters / second value.
+/// @param speed the rate to spin the motor at, as a range of 0 to 1 If in PID control mode at the given m/s if in PID control
+void PWM::EncodedMotor::Backward(float speed) {
+    if (IsPIDControlled) {
+        this->SetSpeed(-1.0 * std::abs(speed));
+    } else {
+        PWM::MOTOR::Backward(speed);
+    }
+}
+
+/// @brief Sets the motor driver pins for going forward.
 void PWM::EncodedMotor::Forward() {
+    
     Pin1.SetState(false);
     Pin2.SetState(true);
 }
 
+/// @brief Sets the motor driver pins for going backwards. 
 void PWM::EncodedMotor::Backward() {
+    
     Pin1.SetState(true);
     Pin2.SetState(false);
 }
 
-void PWM::EncodedMotor::HandleMotorTimer_Callback(struct repeating_timer *t) {
-    if ((endCounts >= encoderCounts && countsToRotate > 0)||( endCounts <= encoderCounts && countsToRotate < 0)) {
+bool PWM::EncodedMotor::HandleMotor_Callback(struct repeating_timer *t) {
+    PWM::EncodedMotor* self = (PWM::EncodedMotor*)t->user_data;
+    self->HandleMotor();
+    return true;
+}
+
+void PWM::EncodedMotor::HandleMotor() {
+    timerCounts++;
+    if ((encoderCounts >= endCounts && countsToRotate > 0)||( encoderCounts <= endCounts && countsToRotate < 0)) {
         Stop();
         SetCounts(0);
     }
+    
+    if (timerCounts >= pidRate && IsPIDControlled) { //Every 20 calls of this timer, we should do the PID loop.
+
+        if (this->countsToRotate != 0) {
+            int error = this->endCounts - this->encoderCounts;
+
+            float closeRatio = (float)error / STOPPINGCOUNTS;
+            closeRatio = std::clamp(closeRatio, -1.0f, 1.0f); 
+
+            float targetVelocity = closeRatio * speedMag;
+            float clampedTargetVelocity = std::clamp(std::abs(targetVelocity), MINSPEED, MAXSPEED);
+            int direction = (closeRatio >= 0) ? 1 : -1;
+            float adjustedTargetVelocity = clampedTargetVelocity * direction;
+            this->pidTargetSpeed = adjustedTargetVelocity;
+        }
+
+        this->timerCounts = 0;
+
+        //Get us the speed error
+        float error = pidTargetSpeed - this->AngularVelocity();
+
+        //Proprotional term
+        float P = Kp * error;
+
+        //Intgeral term
+        this->integralSum += error * dT;
+
+
+        //Anti-Windup system, clamps the integral so it doesn't get stupid high
+        float integralMax = maxOutput / (Ki > 0 ? Ki : 1.0f);
+        integralSum = std::clamp(integralSum, -integralMax, integralMax);
+
+        float I = Ki * integralSum;
+
+        //Derivtative Term
+        float derivative = (error - prevError) / dT;
+        float D = Kd * derivative;
+
+        prevError = error;
+
+        //Feedforward
+        float F = Kf * pidTargetSpeed;
+
+        float output = P + I + D + F;
+
+        output = std::clamp(output, -maxOutput, maxOutput);
+
+        //Set Direction and Speed
+
+        this->SetDuty(std::abs(output));
+
+        (output >= 0) ? Forward() : Backward(); 
+
+    }
+}
+
+void PWM::EncodedMotor::SetSpeed(float speed) {
+    if (IsPIDControlled) {
+        float targetRadS = speed / wheelRadius;
+
+        targetRadS = std::clamp(targetRadS, -MAXSPEED, MAXSPEED);
+
+        this->speedMag = std::abs(targetRadS);
+        this->pidTargetSpeed = targetRadS;
+
+    } else {
+        this->speedMag = speed; this->SetDuty(speed);
+    }
+    
 }
 
 void PWM::EncodedMotor::Stop() {
     Pin1.SetState(false);
     Pin2.SetState(false);
+    this->pidTargetSpeed = 0;
+
+    prevError = 0.0f; 
+    integralSum = 0.0f;
+
 }
 
 /// @brief Sets the number of counts you want to rotate. Use a negative for reverse

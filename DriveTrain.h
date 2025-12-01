@@ -19,6 +19,8 @@ namespace Drivetrain
             uint Pin2;
             uint encPin1;
             uint encPin2;
+        protected:
+            MotorInit() = delete;
     };
 
     class DualMotor {
@@ -58,14 +60,14 @@ namespace Drivetrain
             EncodedDualMotor(uint STBYPin, MotorInit LeftMotorInit, MotorInit RightMotorInit);
 
             /// @brief Sets the drivetrain speed to this value for all movement.
-            /// @param speed the speed from 0 to 1 that the drive motors will spin at.
+            /// @param speed the speed the motor will spin at, the values to use depend on the speed mode.
             void SetSpeed(float speed) {this->speed = speed;}
 
             void DriveAmount(float meters, float speed);
             void DriveAmount(float meters);
 
-            void RotateAmount(float radians, float speed);
-            void RotateAmount(float radians);
+            void RotateAmount(float degrees, float speed);
+            void RotateAmount(float degrees);
 
             using Drivetrain::DualMotor::Forward;
             using Drivetrain::DualMotor::Backward;
@@ -78,6 +80,8 @@ namespace Drivetrain
             using Drivetrain::DualMotor::GetLeftDuty;
             using Drivetrain::DualMotor::GetRightDuty;
 
+            virtual PWM::EncodedMotor* _RightMotor(){return static_cast<PWM::EncodedMotor*>(RightMotor);};
+            virtual PWM::EncodedMotor* _LeftMotor(){return static_cast<PWM::EncodedMotor*>(LeftMotor);};
 
         protected:
 
@@ -85,18 +89,20 @@ namespace Drivetrain
 
             float speed = 0.5;
 
-            float radians;
-            float meters;
+            float radians = 0;
+            float meters = 0;
 
             #pragma endregion
             #pragma region Statics and Constants
 
-            static constexpr float WHEELLENGTH = 1;
+            static constexpr float WHEELBASE = 0.1;
             static constexpr float wheelRadius = 0.025;
             static constexpr float gearRatio = 98.5;
             static constexpr float encoderCPR = 28; //Pulse Counts per revolution
 
             #pragma endregion
+
+           
 
         private:
             EncodedDualMotor() = delete;

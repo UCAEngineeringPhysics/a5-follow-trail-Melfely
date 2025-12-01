@@ -69,13 +69,14 @@ namespace PWM
             using PIN::GetDuty;
             using PIN::Stop;
 
-            void Forward(float speed);
-            void Backward(float speed);
+            virtual void Forward(float speed);
+            virtual void Backward(float speed);
 
             virtual ~MOTOR() {};
         protected:
             
             using PIN::SetDuty;
+            using PIN::GetPin;
 
             GPIO::PIN Pin1;
             GPIO::PIN Pin2;
