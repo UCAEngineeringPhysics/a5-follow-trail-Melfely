@@ -48,7 +48,7 @@ namespace Sensor {
         protected:
             MotorEncoder() = delete;
             #pragma region Constants & Statics
-                static constexpr float wheelRadius = 0.025;
+                static constexpr float wheelRadius = 0.022;
                 static constexpr float gearRatio = 98.5;
                 static constexpr float encoderCPR = 28; //Pulse Counts per revolution
                 static constexpr float timerFrequency = 100;

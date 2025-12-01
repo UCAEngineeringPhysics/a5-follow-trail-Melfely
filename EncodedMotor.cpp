@@ -11,7 +11,7 @@ MOTOR(motorInit.MotorPWM, motorInit.Pin1, motorInit.Pin2),
 MotorEncoder(motorInit.encPin1,motorInit.encPin2)
 {
     //Create a timer that will trigger every millisecond regardless.
-    add_repeating_timer_ms(-1 * (1000 / timerFrequency), HandleMotor_Callback, this, &timer);
+    add_repeating_timer_us(-1 * (100000 / timerFrequency), HandleMotor_Callback, this, &timer);
 }
 
 void PWM::EncodedMotor::RotateCounts(int counts, float speed) {
@@ -72,6 +72,11 @@ bool PWM::EncodedMotor::HandleMotor_Callback(struct repeating_timer *t) {
     return true;
 }
 
+// Save current optimization settings
+#pragma GCC push_options
+// Force optimization to level 0 (None) for this section
+#pragma GCC optimize ("O0")
+
 void PWM::EncodedMotor::HandleMotor() {
     timerCounts++;
     if ((encoderCounts >= endCounts && countsToRotate > 0)||( encoderCounts <= endCounts && countsToRotate < 0)) {
@@ -79,7 +84,7 @@ void PWM::EncodedMotor::HandleMotor() {
         SetCounts(0);
     }
     
-    if (timerCounts >= pidRate && IsPIDControlled) { //Every 20 calls of this timer, we should do the PID loop.
+    if (timerCounts >= pidRate && IsPIDControlled) { //Every pidRate calls of this timer, we should do the PID loop.
 
         if (this->countsToRotate != 0) {
             int error = this->endCounts - this->encoderCounts;
@@ -94,10 +99,15 @@ void PWM::EncodedMotor::HandleMotor() {
             this->pidTargetSpeed = adjustedTargetVelocity;
         }
 
+        
+
         this->timerCounts = 0;
 
         //Get us the speed error
         float error = pidTargetSpeed - this->AngularVelocity();
+        if (prevError == 0 && error == 0 && pidTargetSpeed == 0 ) {
+            integralSum = 0;
+        }
 
         //Proprotional term
         float P = Kp * error;
@@ -133,6 +143,9 @@ void PWM::EncodedMotor::HandleMotor() {
 
     }
 }
+
+//Renable standard optimizations
+#pragma GCC pop_options
 
 void PWM::EncodedMotor::SetSpeed(float speed) {
     if (IsPIDControlled) {

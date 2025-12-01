@@ -22,8 +22,14 @@ int main()
     Drive.SetState(true);
    
     Drive.SetSpeed(0.2);
+
+    sleep_ms(2000);
+
     //Drive.DriveAmount(0.2);
-    Drive.RotateAmount(180.0f);
+
+    Drive.RotateAmount(360.0f);
+
+    //Drive._LeftMotor()->RotateCounts(2800, 0.3);
 
     while(true);
     

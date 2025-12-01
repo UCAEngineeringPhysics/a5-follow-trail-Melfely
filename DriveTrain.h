@@ -95,8 +95,8 @@ namespace Drivetrain
             #pragma endregion
             #pragma region Statics and Constants
 
-            static constexpr float WHEELBASE = 0.1;
-            static constexpr float wheelRadius = 0.025;
+            static constexpr float WHEELBASE = 0.13;
+            static constexpr float wheelRadius = 0.022;
             static constexpr float gearRatio = 98.5;
             static constexpr float encoderCPR = 28; //Pulse Counts per revolution
 
