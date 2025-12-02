@@ -37,6 +37,8 @@ namespace PWM
             void SetSpeedMode(bool mode) {IsPIDControlled = mode;};
             
             virtual void Stop() override;
+
+            bool RotatingToCount() {return (countsToRotate != 0);};
           
         protected:
             int countsToRotate = 0; //The number of raw counts to rotate
@@ -58,6 +60,7 @@ namespace PWM
 
             bool IsPIDControlled = true; //Is this motor in PID speed control mode. Defaults to true.
             float pidTargetSpeed = 0.0f; //The pid target speed, is signed.
+            float pidTargetSpeedMax = 0.0f; //The max speed that the PID will accel to
 
             float prevError = 0.0f; //The previous error value for the PID 
             float integralSum = 0.0f; //The integralCounter

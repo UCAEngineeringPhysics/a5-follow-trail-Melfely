@@ -69,6 +69,10 @@ namespace Drivetrain
             void RotateAmount(float degrees, float speed);
             void RotateAmount(float degrees);
 
+            bool IsRotating() {return _LeftMotor()->RotatingToCount() || _RightMotor()->RotatingToCount(); };
+
+            void WaitUntilDone() { while(IsRotating()) { sleep_ms(10); } };
+
             using Drivetrain::DualMotor::Forward;
             using Drivetrain::DualMotor::Backward;
             using Drivetrain::DualMotor::SpinLeft;
@@ -87,7 +91,7 @@ namespace Drivetrain
 
             #pragma region Variables
 
-            float speed = 0.5;
+            float speed = 0.0;
 
             float radians = 0;
             float meters = 0;
@@ -95,8 +99,8 @@ namespace Drivetrain
             #pragma endregion
             #pragma region Statics and Constants
 
-            static constexpr float WHEELBASE = 0.13;
-            static constexpr float wheelRadius = 0.022;
+            static constexpr float WHEELBASE = 0.130;
+            static constexpr float wheelRadius = 0.0215;
             static constexpr float gearRatio = 98.5;
             static constexpr float encoderCPR = 28; //Pulse Counts per revolution
 

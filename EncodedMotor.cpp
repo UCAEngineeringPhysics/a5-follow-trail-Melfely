@@ -75,7 +75,7 @@ bool PWM::EncodedMotor::HandleMotor_Callback(struct repeating_timer *t) {
 // Save current optimization settings
 #pragma GCC push_options
 // Force optimization to level 0 (None) for this section
-#pragma GCC optimize ("O0")
+// #pragma GCC optimize ("O0")
 
 void PWM::EncodedMotor::HandleMotor() {
     timerCounts++;
@@ -96,9 +96,15 @@ void PWM::EncodedMotor::HandleMotor() {
             float clampedTargetVelocity = std::clamp(std::abs(targetVelocity), MINSPEED, MAXSPEED);
             int direction = (closeRatio >= 0) ? 1 : -1;
             float adjustedTargetVelocity = clampedTargetVelocity * direction;
-            this->pidTargetSpeed = adjustedTargetVelocity;
+            this->pidTargetSpeedMax = adjustedTargetVelocity;
         }
 
+        if (std::abs(pidTargetSpeedMax) <= std::abs(pidTargetSpeed)) {
+            this->pidTargetSpeed = pidTargetSpeedMax;
+        } else if (std::abs(pidTargetSpeed) - 1 <= std::abs(this->AngularVelocity())) {
+            this->pidTargetSpeed += (pidTargetSpeedMax >= 0) ? 0.5 * dT: -0.5 * dT;
+            this->pidTargetSpeed = std::clamp(pidTargetSpeed, -std::abs(pidTargetSpeedMax), std::abs(pidTargetSpeedMax));
+        }
         
 
         this->timerCounts = 0;
@@ -154,7 +160,7 @@ void PWM::EncodedMotor::SetSpeed(float speed) {
         targetRadS = std::clamp(targetRadS, -MAXSPEED, MAXSPEED);
 
         this->speedMag = std::abs(targetRadS);
-        this->pidTargetSpeed = targetRadS;
+        this->pidTargetSpeedMax = targetRadS;
 
     } else {
         this->speedMag = speed; this->SetDuty(speed);
@@ -165,7 +171,7 @@ void PWM::EncodedMotor::SetSpeed(float speed) {
 void PWM::EncodedMotor::Stop() {
     Pin1.SetState(false);
     Pin2.SetState(false);
-    this->pidTargetSpeed = 0;
+    this->pidTargetSpeedMax = 0;
 
     prevError = 0.0f; 
     integralSum = 0.0f;
