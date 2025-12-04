@@ -37,6 +37,8 @@ namespace PWM
             void SetSpeedMode(bool mode) {IsPIDControlled = mode;};
             
             virtual void Stop() override;
+
+            bool RotatingToCount() {return (countsToRotate != 0);};
           
         protected:
             int countsToRotate = 0; //The number of raw counts to rotate
@@ -54,17 +56,18 @@ namespace PWM
 
             int timerCounts = 0; //The number of cycles since last PID check
 
-            static constexpr int pidRate = 20; //Number of timer cycles between each PID check
+            static constexpr int pidRate = 100; //Number of timer cycles between each PID check
 
             bool IsPIDControlled = true; //Is this motor in PID speed control mode. Defaults to true.
             float pidTargetSpeed = 0.0f; //The pid target speed, is signed.
+            float pidTargetSpeedMax = 0.0f; //The max speed that the PID will accel to
 
             float prevError = 0.0f; //The previous error value for the PID 
             float integralSum = 0.0f; //The integralCounter
 
             float maxOutput = 1.0f; //The max value of the PidController
 
-            static constexpr int timerFrequency = 1000; //The number of times the timer is called per second. 
+            static constexpr int timerFrequency = 10000; //The number of times the timer is called per second. 
             static constexpr float dT = pidRate / (timerFrequency * 1.0f); //The rawTime between each pidCheck
             static constexpr float Kf = 0.045; //Feedforward Constant
             static constexpr float Kp = 0.10; //Proportional Constant 

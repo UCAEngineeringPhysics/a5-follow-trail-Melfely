@@ -105,7 +105,7 @@ void Drivetrain::EncodedDualMotor::RotateAmount(float degrees, float speed) {
     float targetRadians = degrees * (M_PI / 180.0f);
     this->radians = targetRadians;
 
-    float leftCounts = (gearRatio * encoderCPR * targetRadians * WHEELBASE) / (2.0f * M_PI * wheelRadius);
+    float leftCounts = (gearRatio * encoderCPR * targetRadians * WHEELBASE) / (4.0f * M_PI * wheelRadius);
     float rightCounts = -1 * leftCounts;
 
     _LeftMotor()->RotateCounts(leftCounts, speed);
