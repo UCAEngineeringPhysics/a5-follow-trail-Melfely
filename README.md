@@ -44,9 +44,7 @@ You can use following definitions in your equation:
 
 > Write down angular motion equation(s) below. 👇
 
-Presuming clockwise rotation is the positive direction.
-$C_l = - C_r$ and
-$C_l = \frac{C}{2}$
+
 
 
 
@@ -54,7 +52,15 @@ $\theta = \frac{(4 \pi r)C}{i CPR L}$
 
 $C = \frac{iCPRL \theta}{4 \pi r}$
 
-$C_l = \frac{iCPRL \theta}{2 \pi r} = - C_r$
+Presuming clockwise rotation is the positive direction.
+$C_l = - C_r$ and
+$C_l = C = - C_r$
+
+Um on my use of clockwise being positive, is actually due to a different convention funny enough. 
+Vex Robotics controllers use a X-Y plane where pushing the stick RIGHT(Clockwise turn) is a POSITIVE value, while pushing LEFT(counterclockwise turn) is a negative value
+So, its just how I am used to doing it.
+
+$C_l = \frac{iCPRL \theta}{4 \pi r} = - C_r$
 
 > [!TIP]
 > You may find the calculation of arc length as illustrated below helpful.
