@@ -78,6 +78,7 @@ namespace PWM
             static constexpr float MINSPEED = 2.0f; //Min Speed Magnitude in Rad/s for prevent stalls when getting close to stuff
 
             static constexpr float STOPPINGCOUNTS = 1000.f; //In Encoder Counts
+            static constexpr float INV_STOPPINGCOUNTS = 1.0f / STOPPINGCOUNTS; //Pre-Calc Expensive Division
             
     };
 

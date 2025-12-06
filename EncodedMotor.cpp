@@ -89,7 +89,7 @@ void PWM::EncodedMotor::HandleMotor() {
         if (this->countsToRotate != 0) {
             int error = this->endCounts - this->encoderCounts;
 
-            float closeRatio = (float)error / STOPPINGCOUNTS;
+            float closeRatio = (float)error * INV_STOPPINGCOUNTS;
             closeRatio = std::clamp(closeRatio, -1.0f, 1.0f); 
 
             float targetVelocity = closeRatio * speedMag;
