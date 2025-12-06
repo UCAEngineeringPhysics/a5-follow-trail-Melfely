@@ -70,7 +70,7 @@ $C_l = \frac{iCPRL \theta}{4 \pi r} = - C_r$
 ### 2. (15%) Wiring
 Please upload your wiring diagram below to illustrate how the motors are controlled and monitored. 👇
 
-![wiring](images/wiring_diagram.jpg)
+![wiring](images/wiringSchematic.png)
 
 ### 3. (70%) Coding
 
